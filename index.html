@@ -1,0 +1,541 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Rockfords Partners – Reward Portal</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --red: #D52B1E;
+      --dark-red: #a82015;
+      --white: #FFFFFF;
+      --off-white: #F7F7F7;
+      --light-gray: #E8E8E8;
+      --mid-gray: #9A9A9A;
+      --dark: #1A1A2E;
+      --text: #2C2C2C;
+      --gold: #C8A951;
+      --success: #2E7D32;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { font-family: 'Inter', sans-serif; background: var(--off-white); color: var(--text); min-height: 100vh; }
+
+    header {
+      background: var(--white);
+      border-bottom: 3px solid var(--red);
+      padding: 0 40px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      height: 72px;
+      position: sticky; top: 0; z-index: 100;
+      box-shadow: 0 2px 12px rgba(0,0,0,0.08);
+    }
+    .logo { display: flex; align-items: center; gap: 14px; }
+    .logo-icon {
+      width: 44px; height: 44px;
+      background: var(--red); border-radius: 6px;
+      display: flex; align-items: center; justify-content: center;
+      font-size: 16px; font-weight: 700; color: white; letter-spacing: -1px;
+    }
+    .logo-name { font-size: 17px; font-weight: 700; color: var(--dark); }
+    .logo-sub { font-size: 10px; font-weight: 500; color: var(--mid-gray); letter-spacing: 1.5px; text-transform: uppercase; }
+    .swiss-badge { display: flex; align-items: center; gap: 8px; font-size: 12px; font-weight: 600; color: var(--mid-gray); }
+    .swiss-flag {
+      width: 28px; height: 28px; background: var(--red);
+      border-radius: 3px; display: flex; align-items: center; justify-content: center;
+    }
+
+    .hero {
+      background: linear-gradient(135deg, #1A1A2E 0%, #16213E 60%, #0F3460 100%);
+      padding: 80px 40px 90px;
+      text-align: center; position: relative; overflow: hidden;
+    }
+    .hero::before {
+      content: ''; position: absolute; top: -60px; right: -60px;
+      width: 300px; height: 300px; background: var(--red); opacity: 0.07; border-radius: 50%;
+    }
+    .hero-eyebrow {
+      display: inline-flex; align-items: center; gap: 8px;
+      background: rgba(213,43,30,0.15); border: 1px solid rgba(213,43,30,0.3);
+      border-radius: 100px; padding: 6px 16px;
+      font-size: 11px; font-weight: 600; color: #FF7B72;
+      letter-spacing: 1.5px; text-transform: uppercase; margin-bottom: 24px;
+    }
+    .hero h1 { font-size: clamp(26px, 5vw, 46px); font-weight: 700; color: white; line-height: 1.15; margin-bottom: 10px; }
+    .hero h1 span { color: var(--gold); }
+    .hero-sub { font-size: 14px; color: rgba(255,255,255,0.5); font-style: italic; margin-bottom: 22px; }
+    .hero-desc { font-size: 16px; color: rgba(255,255,255,0.72); max-width: 640px; margin: 0 auto 14px; line-height: 1.7; }
+    .hero-desc-en { font-size: 13px; color: rgba(255,255,255,0.38); max-width: 560px; margin: 0 auto; line-height: 1.6; font-style: italic; }
+
+    .notice {
+      background: #FFF8E1; border-left: 4px solid var(--gold);
+      padding: 14px 40px; font-size: 13px; color: #5D4037;
+      display: flex; align-items: flex-start; gap: 10px;
+    }
+
+    .main-wrap { max-width: 760px; margin: 48px auto; padding: 0 20px 60px; }
+    .card { background: var(--white); border-radius: 16px; box-shadow: 0 4px 40px rgba(0,0,0,0.10); overflow: hidden; }
+    .card-header {
+      background: linear-gradient(90deg, var(--red) 0%, #b02419 100%);
+      padding: 24px 32px; display: flex; align-items: center; gap: 14px;
+    }
+    .card-header-icon {
+      width: 42px; height: 42px; background: rgba(255,255,255,0.15);
+      border-radius: 10px; display: flex; align-items: center; justify-content: center; font-size: 22px;
+    }
+    .card-header-text h2 { font-size: 18px; font-weight: 700; color: white; }
+    .card-header-text p { font-size: 12px; color: rgba(255,255,255,0.7); margin-top: 2px; }
+
+    .step-indicator {
+      padding: 16px 32px; border-bottom: 1px solid var(--light-gray);
+      display: flex; gap: 6px; align-items: center;
+    }
+    .step-dot { width: 28px; height: 6px; border-radius: 3px; background: var(--light-gray); transition: background 0.3s; }
+    .step-dot.active { background: var(--red); }
+    .step-dot.done { background: var(--success); }
+    .step-label { margin-left: auto; font-size: 11px; font-weight: 600; color: var(--mid-gray); letter-spacing: 0.5px; }
+
+    .form-body { padding: 32px; }
+    .field-group { margin-bottom: 24px; }
+    .field-label { display: block; font-size: 13px; font-weight: 600; color: var(--text); margin-bottom: 3px; }
+    .field-label-en { display: block; font-size: 11px; color: var(--mid-gray); margin-bottom: 8px; font-style: italic; }
+    input[type="text"], input[type="tel"], select {
+      width: 100%; padding: 12px 16px;
+      border: 1.5px solid var(--light-gray); border-radius: 9px;
+      font-size: 14px; font-family: 'Inter', sans-serif; color: var(--text);
+      background: var(--off-white); outline: none; appearance: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+    input:focus, select:focus {
+      border-color: var(--red); box-shadow: 0 0 0 3px rgba(213,43,30,0.1); background: white;
+    }
+    .field-hint { font-size: 11px; color: var(--mid-gray); margin-top: 5px; }
+    .field-error { font-size: 11px; color: #C62828; margin-top: 5px; display: none; }
+
+    .radio-group { display: flex; flex-direction: column; gap: 10px; }
+    .radio-option {
+      display: flex; align-items: flex-start; gap: 12px; padding: 14px 16px;
+      border: 1.5px solid var(--light-gray); border-radius: 9px;
+      cursor: pointer; transition: border-color 0.2s, background 0.2s;
+    }
+    .radio-option:hover { border-color: #ccc; background: #fafafa; }
+    .radio-option.selected { border-color: var(--red); background: rgba(213,43,30,0.04); }
+    .radio-option input[type="radio"] { display: none; }
+    .radio-dot {
+      width: 18px; height: 18px; border: 2px solid var(--light-gray);
+      border-radius: 50%; flex-shrink: 0; margin-top: 2px;
+      display: flex; align-items: center; justify-content: center; transition: border-color 0.2s;
+    }
+    .radio-option.selected .radio-dot { border-color: var(--red); background: var(--red); }
+    .radio-option.selected .radio-dot::after { content: ''; width: 6px; height: 6px; background: white; border-radius: 50%; }
+    .radio-text strong { display: block; font-size: 13px; font-weight: 600; color: var(--text); }
+    .radio-text span { font-size: 11px; color: var(--mid-gray); font-style: italic; }
+
+    .alert-box {
+      display: none; padding: 14px 16px; border-radius: 9px;
+      font-size: 13px; margin-top: 16px; line-height: 1.6;
+    }
+    .alert-box.warning { background: #FFF3E0; border: 1px solid #FFB74D; color: #E65100; }
+    .alert-box.info { background: #E3F2FD; border: 1px solid #90CAF9; color: #1565C0; }
+
+    hr.divider { border: none; border-top: 1px solid var(--light-gray); margin: 24px 0; }
+
+    .btn-primary {
+      width: 100%; padding: 15px; background: var(--red); color: white;
+      border: none; border-radius: 10px; font-size: 15px; font-weight: 700;
+      cursor: pointer; letter-spacing: 0.3px; transition: background 0.2s, transform 0.1s;
+      display: flex; align-items: center; justify-content: center; gap: 8px;
+      font-family: 'Inter', sans-serif;
+    }
+    .btn-primary:hover { background: var(--dark-red); }
+    .btn-primary:active { transform: scale(0.99); }
+
+    .page { display: none; }
+    .page.active { display: block; }
+
+    .final-box { text-align: center; padding: 44px 32px 52px; }
+    .final-icon {
+      width: 80px; height: 80px;
+      background: linear-gradient(135deg, #1A3A5C, #0F3460);
+      border-radius: 50%; display: flex; align-items: center; justify-content: center;
+      font-size: 36px; margin: 0 auto 24px;
+      box-shadow: 0 6px 24px rgba(15,52,96,0.25);
+    }
+    .final-box h2 { font-size: 22px; font-weight: 700; color: var(--dark); margin-bottom: 6px; }
+    .final-box .sub { font-size: 13px; color: var(--mid-gray); font-style: italic; margin-bottom: 28px; }
+    .final-steps { background: var(--off-white); border-radius: 12px; padding: 24px; text-align: left; margin-bottom: 28px; }
+    .final-step { display: flex; gap: 14px; align-items: flex-start; margin-bottom: 18px; }
+    .final-step:last-child { margin-bottom: 0; }
+    .step-num {
+      width: 30px; height: 30px; background: var(--red); color: white;
+      border-radius: 50%; font-size: 13px; font-weight: 700;
+      display: flex; align-items: center; justify-content: center; flex-shrink: 0;
+    }
+    .step-content strong { display: block; font-size: 13px; font-weight: 600; color: var(--dark); margin-bottom: 3px; }
+    .step-content span { font-size: 12px; color: var(--mid-gray); font-style: italic; }
+
+    .secondary-btn {
+      display: inline-flex; align-items: center; gap: 10px;
+      background: #229ED9; color: white; padding: 14px 28px;
+      border-radius: 10px; font-size: 15px; font-weight: 700;
+      text-decoration: none; border: none; cursor: pointer;
+      width: 100%; justify-content: center; font-family: 'Inter', sans-serif;
+      transition: background 0.2s;
+    }
+    .secondary-btn:hover { background: #1a8fc4; }
+
+    .blocked-box { text-align: center; padding: 50px 32px; }
+    .blocked-icon { font-size: 56px; margin-bottom: 18px; }
+    .blocked-box h2 { font-size: 20px; font-weight: 700; color: #C62828; margin-bottom: 8px; }
+    .blocked-box p { font-size: 13px; color: var(--mid-gray); line-height: 1.7; max-width: 420px; margin: 0 auto; }
+
+    .summary-row {
+      display: flex; justify-content: space-between; align-items: center;
+      padding: 10px 0; border-bottom: 1px solid var(--light-gray);
+    }
+    .summary-row:last-child { border-bottom: none; }
+    .summary-key { font-size: 12px; font-weight: 600; color: var(--mid-gray); }
+    .summary-val { font-size: 13px; font-weight: 600; color: var(--text); text-align: right; max-width: 55%; }
+
+    .device-choice {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 10px;
+    }
+    .device-pill {
+      border: 1.5px solid var(--light-gray);
+      border-radius: 12px;
+      padding: 12px 10px;
+      text-align: center;
+      cursor: pointer;
+      background: #fff;
+      transition: 0.2s ease;
+      font-weight: 600;
+      font-size: 13px;
+      color: var(--text);
+    }
+    .device-pill:hover { border-color: #ccc; background: #fafafa; }
+    .device-pill.selected { border-color: var(--red); background: rgba(213,43,30,0.05); color: var(--dark); }
+
+    footer {
+      background: var(--dark); color: rgba(255,255,255,0.45);
+      text-align: center; padding: 28px 20px; font-size: 11px; letter-spacing: 0.5px;
+    }
+    footer strong { color: rgba(255,255,255,0.65); }
+
+    @media (max-width: 500px) {
+      header { padding: 0 16px; }
+      .hero { padding: 50px 20px 60px; }
+      .notice { padding: 12px 16px; }
+      .form-body { padding: 20px; }
+      .card-header { padding: 18px 20px; }
+      .step-indicator { padding: 14px 20px; }
+      .final-box { padding: 28px 20px 36px; }
+      .device-choice { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <div class="logo">
+    <div class="logo-icon">RP</div>
+    <div>
+      <div class="logo-name">Rockfords Partners</div>
+      <div class="logo-sub">Reward Flow</div>
+    </div>
+  </div>
+  <div class="swiss-badge">
+    <div class="swiss-flag">
+      <svg width="16" height="16" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+        <rect x="8" y="3" width="4" height="14" fill="white"/>
+        <rect x="3" y="8" width="14" height="4" fill="white"/>
+      </svg>
+    </div>
+    <span>Transparent</span>
+  </div>
+</header>
+
+<div class="hero">
+  <div class="hero-eyebrow">Partner questionnaire · device-based offer</div>
+  <h1>Willkommen bei<br /><span>Rockfords Partners</span></h1>
+  <p class="hero-sub">Ihr Partner-Link wird je nach Gerät angezeigt · Your partner link is shown based on device</p>
+  <p class="hero-desc">Um die 10 $ USDT Prämie zu erhalten, müssen Sie den kurzen Fragebogen auf der Partnerseite abschließen. Wählen Sie anschließend Ihr Gerät aus, damit Ihnen der richtige Link angezeigt wird.</p>
+  <p class="hero-desc-en">To receive the $10 USDT reward, you must complete the short questionnaire on the partner site. After that, choose your device so the correct link is displayed.</p>
+</div>
+
+<div class="main-wrap">
+  <div class="card">
+
+    <!-- PAGE 1 -->
+    <div class="page active" id="page1">
+      <div class="card-header">
+        <div class="card-header-icon">👤</div>
+        <div class="card-header-text">
+          <h2>Persönliche Angaben · Personal Details</h2>
+          <p>Schritt 1 von 3 · Step 1 of 3</p>
+        </div>
+      </div>
+      <div class="step-indicator">
+        <div class="step-dot active"></div>
+        <div class="step-dot"></div>
+        <div class="step-dot"></div>
+        <span class="step-label">1 / 3</span>
+      </div>
+      <div class="form-body">
+        <div class="field-group">
+          <label class="field-label">Vollständiger Name *</label>
+          <label class="field-label-en">Full Name</label>
+          <input type="text" id="fullName" placeholder="z.B. Hans Müller · e.g. John Smith" />
+          <div class="field-error" id="err-name">Bitte geben Sie Ihren vollständigen Namen ein. · Please enter your full name.</div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Beruf / Stelle *</label>
+          <label class="field-label-en">Occupation / Job Title</label>
+          <input type="text" id="jobTitle" placeholder="z.B. Ingenieur, Arzt, Student · e.g. Engineer, Doctor, Student" />
+          <div class="field-error" id="err-job">Bitte geben Sie Ihren Beruf an. · Please enter your occupation.</div>
+        </div>
+        <div class="field-group">
+          <label class="field-label">Wohnkanton *</label>
+          <label class="field-label-en">Canton of Residence</label>
+          <select id="canton">
+            <option value="">— Kanton wählen · Select Canton —</option>
+            <option>Zürich (ZH)</option><option>Bern (BE)</option><option>Luzern (LU)</option>
+            <option>Uri (UR)</option><option>Schwyz (SZ)</option><option>Obwalden (OW)</option>
+            <option>Nidwalden (NW)</option><option>Glarus (GL)</option><option>Zug (ZG)</option>
+            <option>Freiburg (FR)</option><option>Solothurn (SO)</option><option>Basel-Stadt (BS)</option>
+            <option>Basel-Landschaft (BL)</option><option>Schaffhausen (SH)</option>
+            <option>Appenzell Ausserrhoden (AR)</option><option>Appenzell Innerrhoden (AI)</option>
+            <option>St. Gallen (SG)</option><option>Graubünden (GR)</option><option>Aargau (AG)</option>
+            <option>Thurgau (TG)</option><option>Tessin (TI)</option><option>Waadt (VD)</option>
+            <option>Wallis (VS)</option><option>Neuenburg (NE)</option><option>Genf (GE)</option>
+            <option>Jura (JU)</option>
+          </select>
+          <div class="field-error" id="err-canton">Bitte wählen Sie Ihren Kanton. · Please select your canton.</div>
+        </div>
+        <button class="btn-primary" onclick="goPage2()">Weiter · Continue →</button>
+      </div>
+    </div>
+
+    <!-- PAGE 2 -->
+    <div class="page" id="page2">
+      <div class="card-header">
+        <div class="card-header-icon">📱</div>
+        <div class="card-header-text">
+          <h2>Kontakt & Gerät · Contact & Device</h2>
+          <p>Schritt 2 von 3 · Step 2 of 3</p>
+        </div>
+      </div>
+      <div class="step-indicator">
+        <div class="step-dot done"></div>
+        <div class="step-dot active"></div>
+        <div class="step-dot"></div>
+        <span class="step-label">2 / 3</span>
+      </div>
+      <div class="form-body">
+        <div class="field-group">
+          <label class="field-label">E-Mail oder Telegram-Name *</label>
+          <label class="field-label-en">Email or Telegram handle</label>
+          <input type="text" id="contactHandle" placeholder="z.B. @username oder name@example.com" />
+          <div class="field-hint">Wir verwenden diese Angabe nur für die Zuordnung Ihres Partner-Links. · We use this only to match your partner link.</div>
+          <div class="field-error" id="err-contact">Bitte geben Sie einen Kontakt ein. · Please enter a contact value.</div>
+        </div>
+
+        <hr class="divider" />
+
+        <div class="field-group">
+          <label class="field-label">Welches Gerät verwenden Sie? *</label>
+          <label class="field-label-en">Which device are you using?</label>
+          <div class="device-choice">
+            <div class="device-pill" id="dev-android" onclick="selectDevice('android')">Android</div>
+            <div class="device-pill" id="dev-ios" onclick="selectDevice('ios')">iPhone / iOS</div>
+            <div class="device-pill" id="dev-pc" onclick="selectDevice('pc')">PC / Desktop</div>
+          </div>
+          <div class="field-error" id="err-device">Bitte wählen Sie ein Gerät. · Please select a device.</div>
+        </div>
+
+        <div class="alert-box warning" id="device-note">
+          ⚠️ <strong>Hinweis / Notice:</strong> Nach dem Absenden wird auf der nächsten Seite der passende Partner-Link basierend auf Ihrem Gerät angezeigt.
+        </div>
+
+        <button class="btn-primary" onclick="goPage3()">Weiter · Continue →</button>
+      </div>
+    </div>
+
+    <!-- PAGE 3 -->
+    <div class="page" id="page3">
+      <div class="card-header">
+        <div class="card-header-icon">✅</div>
+        <div class="card-header-text">
+          <h2>Zusammenfassung · Summary</h2>
+          <p>Schritt 3 von 3 · Step 3 of 3</p>
+        </div>
+      </div>
+      <div class="step-indicator">
+        <div class="step-dot done"></div>
+        <div class="step-dot done"></div>
+        <div class="step-dot active"></div>
+        <span class="step-label">3 / 3</span>
+      </div>
+      <div class="form-body">
+        <div id="summary-box" style="background:var(--off-white); border-radius:12px; padding:20px; margin-bottom:24px;"></div>
+        <div class="alert-box info" id="reward-eligible">
+          🎁 <strong>Prämienhinweis / Reward Note:</strong> Wenn Sie den Partner-Fragebogen erfolgreich abschließen, wird Ihnen auf der nächsten Seite der passende Geräte-Link angezeigt.
+        </div>
+        <br />
+        <button class="btn-primary" onclick="submitForm()">Bestätigen & Weiter · Confirm & Continue ✓</button>
+      </div>
+    </div>
+
+    <!-- PAGE 4: OFFER -->
+    <div class="page" id="page4">
+      <div class="final-box">
+        <div class="final-icon">🎁</div>
+        <h2>Partner-Link bereit</h2>
+        <p class="sub">Partner link ready · Der richtige Link wurde für Ihr Gerät ausgewählt</p>
+
+        <div class="final-steps">
+          <div class="final-step">
+            <div class="step-num">1</div>
+            <div class="step-content">
+              <strong>Fragebogen auf der Partnerseite abschließen</strong>
+              <span>Um die 10 $ USDT Prämie zu erhalten, müssen Sie die Partner-Fragen vollständig beantworten.</span>
+            </div>
+          </div>
+          <div class="final-step">
+            <div class="step-num">2</div>
+            <div class="step-content">
+              <strong>Complete the partner questionnaire</strong>
+              <span>To receive the $10 USDT reward, finish the required questionnaire on the partner site.</span>
+            </div>
+          </div>
+          <div class="final-step">
+            <div class="step-num">3</div>
+            <div class="step-content">
+              <strong>Ihr Geräte-Link wird unten angezeigt</strong>
+              <span>Wählen Sie den passenden Link für Android, iPhone/iOS oder PC/Desktop.</span>
+            </div>
+          </div>
+        </div>
+
+        <a class="secondary-btn" id="offerButton" href="#" target="_blank" rel="noopener noreferrer">Partner-Angebot öffnen</a>
+
+        <div style="
+          margin-top:24px;
+          padding:16px;
+          background:#FFF8E1;
+          border-radius:10px;
+          font-size:12px;
+          color:#5D4037;
+          line-height:1.7;
+          text-align:left;
+        ">
+          ⚠️ <strong>Hinweis / Notice:</strong><br /><br />
+          Die 10 $ USDT Prämie ist an den Abschluss des Partner-Fragebogens und der erforderlichen Schritte gebunden.<br /><br />
+          <em>The $10 USDT reward is tied to completing the partner questionnaire and the required steps.</em>
+        </div>
+      </div>
+    </div>
+
+    <!-- PAGE 5: ERROR -->
+    <div class="page" id="page5">
+      <div class="blocked-box">
+        <div class="blocked-icon">⚠️</div>
+        <h2>Unvollständige Angaben</h2>
+        <p style="color:#C62828; font-size:14px; margin-bottom:14px; font-weight:600;">Incomplete details</p>
+        <p>
+          Bitte kehren Sie zurück und füllen Sie alle Pflichtfelder aus, damit der passende Partner-Link angezeigt werden kann.
+        </p>
+      </div>
+    </div>
+
+  </div>
+</div>
+
+<footer>
+  <div style="font-size:22px;margin-bottom:8px;">🇨🇭</div>
+  <strong>Rockfords Partners AG</strong> &nbsp;·&nbsp; Switzerland<br />
+  Reward Flow &nbsp;·&nbsp; Partner questionnaire and device-based link display<br /><br />
+  © 2025 Rockfords Partners. Alle Rechte vorbehalten · All rights reserved.
+</footer>
+
+<script>
+  let deviceChoice = null;
+
+  function selectDevice(choice) {
+    deviceChoice = choice;
+    document.getElementById('dev-android').classList.toggle('selected', choice === 'android');
+    document.getElementById('dev-ios').classList.toggle('selected', choice === 'ios');
+    document.getElementById('dev-pc').classList.toggle('selected', choice === 'pc');
+    document.getElementById('device-note').style.display = 'block';
+    document.getElementById('err-device').style.display = 'none';
+  }
+
+  function showErr(id, show) {
+    document.getElementById(id).style.display = show ? 'block' : 'none';
+  }
+
+  function goPage2() {
+    var name = document.getElementById('fullName').value.trim();
+    var job = document.getElementById('jobTitle').value.trim();
+    var canton = document.getElementById('canton').value;
+    var ok = true;
+    showErr('err-name', !name); if (!name) ok = false;
+    showErr('err-job', !job); if (!job) ok = false;
+    showErr('err-canton', !canton); if (!canton) ok = false;
+    if (ok) switchPage('page1', 'page2');
+  }
+
+  function goPage3() {
+    var contact = document.getElementById('contactHandle').value.trim();
+    var ok = true;
+    showErr('err-contact', !contact); if (!contact) ok = false;
+    showErr('err-device', !deviceChoice); if (!deviceChoice) ok = false;
+    if (!ok) return;
+
+    var name = document.getElementById('fullName').value.trim();
+    var job = document.getElementById('jobTitle').value.trim();
+    var canton = document.getElementById('canton').value;
+    var rows = [
+      ['👤 Name', name],
+      ['💼 Beruf / Job', job],
+      ['🏔 Kanton', canton],
+      ['💬 Kontakt', contact],
+      ['📱 Gerät / Device', deviceChoice === 'android' ? 'Android' : deviceChoice === 'ios' ? 'iPhone / iOS' : 'PC / Desktop']
+    ];
+
+    var html = '';
+    rows.forEach(function(r) {
+      html += '<div class="summary-row"><span class="summary-key">' + r[0] + '</span><span class="summary-val">' + r[1] + '</span></div>';
+    });
+    document.getElementById('summary-box').innerHTML = html;
+
+    switchPage('page2', 'page3');
+  }
+
+  function submitForm() {
+    var links = {
+      android: 'https://trkfiles.com/show.php?l=0&u=2469174&id=74909',
+      ios: 'https://passingfiles.com/show.php?l=0&u=2469174&id=74910',
+      pc: 'https://forwardtrk.com/show.php?l=0&u=2469174&id=74908'
+    };
+    document.getElementById('offerButton').href = links[deviceChoice] || '#';
+    document.getElementById('offerButton').textContent =
+      deviceChoice === 'android' ? 'Android Partner-Angebot öffnen' :
+      deviceChoice === 'ios' ? 'iPhone / iOS Partner-Angebot öffnen' :
+      deviceChoice === 'pc' ? 'PC / Desktop Partner-Angebot öffnen' :
+      'Partner-Angebot öffnen';
+    switchPage('page3', 'page4');
+  }
+
+  function switchPage(from, to) {
+    document.getElementById(from).classList.remove('active');
+    document.getElementById(to).classList.add('active');
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+  }
+</script>
+</body>
+</html>
